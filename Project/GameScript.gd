@@ -1,7 +1,7 @@
 extends Node2D
 
 # Variabler för "click" systemet samt vilket läge den är i (Red, Green, Blue eller Yellow)
-var storageNUM = []
+var storageNUM : Array[int] = []
 var coincount = 0
 var timerrounds = 0
 var TOTALCPS = 0
@@ -14,8 +14,32 @@ var YellowPressed = false
 var WheelResult = null
 # Change WheelTimerDone to false when you release the code right now it is true for bugg fixing
 var WheelTimerDone = true
+var WheelBadArray : Array[int] = [1, 2, 3 ,4]
+
+# 1 = -10% of what you have
+# 2 = +time for color changer
+# 3 = - luck & + time for next spin
+# 4 = color now do negative efekts for a short period
+
+var WheelGoodArray = [1, 2, 3, 4]
+
+# 1 = - time For Color Changer Mode
+# 2 = + 10% of what you have
+# 3 = + luck & - time for next wheel spin
+# 4 = color - white mode
+
+
 # För att man ska kunna uppdradera hur mycket man får per "click"
 var mouseValue = 1
+
+
+# Lottery Wheel Variabler
+var GoodAnswere = null
+var BadAnswere = null
+var LowChansNumbrecalc2 = 0.0
+var HighChansNumbrecalc2 = 1.0
+var LowChansNumbreclac1 = 0.0
+var HighChansNumbrecalc1 = 1.0
 
 # Variabler till lottery Wheel
 var lotteryPrise = 15
@@ -79,6 +103,9 @@ const lotteryBaseCost = 15
 @onready var ColorTimer = $ColorTimer
 @onready var MoneyLable = $ClickerManager/Money
 @onready var CPSLable = $ClickerManager/CPS
+@onready var RandomTimer = $LotteryWheel/RandomTimer
+@onready var WheelTimer = $LotteryWheel/WheelTimer
+@onready var resetFunction = $LotteryWheel/ResetFunction
 
 @onready var LotteryWheelAmountLable = $Shop/TabSelector/Attractions/LotteryWheel/LotteryWheelAmount
 @onready var LotteryWheelCostLable = $Shop/TabSelector/Attractions/LotteryWheel/LotteryWheelCost
@@ -376,22 +403,47 @@ func _on_color_timer_timeout():
 
 #////////////////////////////////////////////////////////
 
+# I need to rework this shit 
+"""
 func _on_wheel_button_pressed():
 	if WheelTimerDone == true:
 		if ColorMode == "ColorGreen":
-			WheelResult = RNG.randf_range(0.0, 1.0)
-			if WheelResult < 0.55:
+			WheelResult = RNG.randf_range(int(LowChansNumbreclac1), int(HighChansNumbrecalc1))
+			if WheelResult <= 0.55:
 				print("You got the good part")
 			if WheelResult > 0.55:
 				print("you got the bad part")
 		else:
-			WheelResult = RNG.randi_range(int(1.0), int(8.0))
-			if WheelResult % 2 == 1:
-				# Add another RNG.randi_range() here but let it choose from an good array (good options)
+			WheelResult = RNG.randf_range(int(LowChansNumbrecalc2), int(HighChansNumbrecalc2))
+			if WheelResult >= 0.5:
+				GoodAnswere = WheelGoodArray.pick_random()
+				if GoodAnswere == 1:
+					pass 
+				if GoodAnswere == 2:
+					pass
+				if GoodAnswere == 3:
+					pass
+				if GoodAnswere == 4:
+					pass 
 				print("Odd Numbre")
-			if WheelResult % 2 == 0:
-				# Add another RNG.randi_range() here but let it choose from an bad array (bad options)
+			if WheelResult < 0.5:
+				BadAnswere = WheelBadArray.pick_random()
+				if BadAnswere == 1:
+					coincount = coincount * 0.9
+				if BadAnswere == 2:
+					ColorTimer.set_time_left(180)
+				if BadAnswere == 3:
+					HighChansNumbrecalc2 = 1.7
+					WheelTimer.set_time(3900)
+				if BadAnswere == 4:
+					RandomTimer.set_time(120)
+					$ColorPicker.hide()
+					RandomTimer.start()
+				if RandomTimer.wait_time() == 0:
+					$ColorPicker.show()
 				print("Even Numbre")
+		WheelTimer.start()
+		BadAnswere = null 
 
 func _on_wheel_timer_timeout():
 	WheelTimerDone = true
@@ -402,3 +454,12 @@ func _on_click_uppgrade_pressed():
 	if coincount >= upgradeSpinClickPrice:
 		mouseValue = mouseValue + 0.2
 
+# 1 = -10% of what you have
+# 2 = +time for color changer
+# 3 = - luck & + time for next spin
+# 4 = color are deactivated
+
+
+func _on_reset_function_timeout():
+	HighChansNumbrecalc2 = 1.0
+""" 
