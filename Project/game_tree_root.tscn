@@ -45,6 +45,10 @@ offset_top = -24.0
 offset_right = 24.0
 offset_bottom = 24.0
 
+[node name="RandomTimer" type="Timer" parent="LotteryWheel"]
+
+[node name="ResetFunction" type="Timer" parent="LotteryWheel"]
+
 [node name="ColorPicker" type="Node2D" parent="."]
 modulate = Color(1, 1, 1, 0.560784)
 position = Vector2(512, 488)
@@ -456,6 +460,7 @@ position = Vector2(576, 320)
 
 [connection signal="timeout" from="LotteryWheel/WheelTimer" to="." method="_on_wheel_timer_timeout"]
 [connection signal="pressed" from="LotteryWheel/WheelButton" to="." method="_on_wheel_button_pressed"]
+[connection signal="timeout" from="LotteryWheel/ResetFunction" to="." method="_on_reset_function_timeout"]
 [connection signal="pressed" from="ColorPicker/RedButton" to="." method="_on_red_button_pressed"]
 [connection signal="pressed" from="ColorPicker/GreenButton" to="." method="_on_green_button_pressed"]
 [connection signal="pressed" from="ColorPicker/BlueButton" to="." method="_on_blue_button_pressed"]
